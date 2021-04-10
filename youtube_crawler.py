@@ -24,6 +24,7 @@ class youtubeCrawler:
                         item['contentDetails']['upload']['videoId'])
                 if len(video_list) == 100:
                     stopsign = True
+                    print(f'{channel_id} vidoes OK')
                     break
 
         return video_list
