@@ -4,6 +4,7 @@ from rest_framework import status
 from django.views import View
 from django.http import HttpResponse, JsonResponse
 from .engine import core
+
 import json
 
 
@@ -16,8 +17,7 @@ class Video(View):
         videoId = j['videoId']
 
         print('videoId: ' + videoId)
-        output = core.analyzeAll(videoId)   
-        
+        output = core.analyzeNpredict(videoId)
         with open('./comedycentral_test.json', 'wt', encoding='UTF-8') as f:
             f.write(output)
 
