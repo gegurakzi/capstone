@@ -38,26 +38,42 @@ def analyzeAll(videoId):
     analyze_result['totalSentences'] = wa_result['Total_sentences']
     analyze_result['avgSyllPerSec'] = sa_result['avgSyllPerSec']
     analyze_result['avgCEFRScore'] = wa_result['Total_avg_CEFR']
+    analyze_result['avgWordCEFR'] = wa_result['Word_avg_CEFR']
+    analyze_result['avgFreqCEFR'] = wa_result['Freq_avg_CEFR']
     analyze_result['readability'] = wa_result['DC_Readability']
+    analyze_result['avgSentenceLength'] = wa_result['avg_sentence_length']
     analyze_result['uncommonRatio'] = wa_result['DCL']['uncommon_ratio']
 
-    cefr_sum = [0, 0, 0, 0, 0, 0, 0]
-    for checker in ['CEFR', 'Freq']:
-        for cefr in ['Oxford', 'Japanese', 'Tv', 'Simpson', 'Gutenberg']:
-            if cefr in wa_result[checker]:
-                for idx, level in enumerate(['A1', 'A2', 'B1', 'B2', 'C1', 'C2', 'N']):
-                    cefr_sum[idx] += len(wa_result[checker]
-                                         [cefr]['classified_words'][level])
-    cefr_ratio = list(
-        map(lambda x: (x/5)/analyze_result['totalUniqueWords']*100, cefr_sum))
+    def calCEFRRatio(targetList, subject):
+        #targetList :  ['CEFR', 'Freq']
+        #subject : ['Oxford', 'Japanese', 'Tv', 'Simpson', 'Gutenberg']
+        cefr_sum = [0, 0, 0, 0, 0, 0, 0]
+        for checker in targetList:
+            for cefr in ['Oxford', 'Japanese', 'Tv', 'Simpson', 'Gutenberg']:
+                if cefr in wa_result[checker]:
+                    for idx, level in enumerate(['A1', 'A2', 'B1', 'B2', 'C1', 'C2', 'N']):
+                        cefr_sum[idx] += len(wa_result[checker]
+                                             [cefr]['classified_words'][level])
+        cefr_ratio = list(
+            map(lambda x: (x/5)/analyze_result['totalUniqueWords']*100, cefr_sum))
+        return cefr_ratio
 
-    analyze_result['A1ratio'] = cefr_ratio[0]
-    analyze_result['A2ratio'] = cefr_ratio[1]
-    analyze_result['B1ratio'] = cefr_ratio[2]
-    analyze_result['B2ratio'] = cefr_ratio[3]
-    analyze_result['C1ratio'] = cefr_ratio[4]
-    analyze_result['C2ratio'] = cefr_ratio[5]
-    analyze_result['Nratio'] = cefr_ratio[6]
+    cefr_ratio = calCEFRRatio(
+        ['CEFR', 'Freq'], ['Oxford', 'Japanese', 'Tv', 'Simpson', 'Gutenberg'])
+    analyze_result['totalEasyRatio'] = cefr_ratio[0]+cefr_ratio[1]
+    analyze_result['totalMiddleRatio'] = cefr_ratio[2]+cefr_ratio[3]
+    analyze_result['totalHardRatio'] = cefr_ratio[4] + \
+        cefr_ratio[5]+cefr_ratio[6]
+    cefr_ratio = calCEFRRatio(['CEFR'], ['Oxford', 'Japanese'])
+    analyze_result['wordEasyRatio'] = cefr_ratio[0]+cefr_ratio[1]
+    analyze_result['wordMiddleRatio'] = cefr_ratio[2]+cefr_ratio[3]
+    analyze_result['wordHardRatio'] = cefr_ratio[4] + \
+        cefr_ratio[5]+cefr_ratio[6]
+    cefr_ratio = calCEFRRatio(['Freq'], ['Tv', 'Simpson', 'Gutenberg'])
+    analyze_result['FreqEasyRatio'] = cefr_ratio[0]+cefr_ratio[1]
+    analyze_result['FreqMiddleRatio'] = cefr_ratio[2]+cefr_ratio[3]
+    analyze_result['FreqHardRatio'] = cefr_ratio[4] + \
+        cefr_ratio[5]+cefr_ratio[6]
 
     print('analyze ok')
 
