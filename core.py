@@ -2,7 +2,7 @@ import json
 import pickle
 import numpy as np
 
-from theano.tensor.basic import outer
+from theano.tensor.basic import outer, sub
 from word_analyzer import WordAnalyzer
 from script_analyzer import ScriptAnalyzer
 from punctuator import Punctuator
@@ -49,13 +49,13 @@ def analyzeAll(videoId):
         #subject : ['Oxford', 'Japanese', 'Tv', 'Simpson', 'Gutenberg']
         cefr_sum = [0, 0, 0, 0, 0, 0, 0]
         for checker in targetList:
-            for cefr in ['Oxford', 'Japanese', 'Tv', 'Simpson', 'Gutenberg']:
+            for cefr in subject:
                 if cefr in wa_result[checker]:
                     for idx, level in enumerate(['A1', 'A2', 'B1', 'B2', 'C1', 'C2', 'N']):
                         cefr_sum[idx] += len(wa_result[checker]
                                              [cefr]['classified_words'][level])
         cefr_ratio = list(
-            map(lambda x: (x/5)/analyze_result['totalUniqueWords']*100, cefr_sum))
+            map(lambda x: (x/len(subject))/analyze_result['totalUniqueWords']*100, cefr_sum))
         return cefr_ratio
 
     cefr_ratio = calCEFRRatio(
