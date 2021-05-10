@@ -14,10 +14,10 @@ from nltk import pos_tag
 from nltk.stem.wordnet import wordnet as wn
 lemma = WordNetLemmatizer()
 stem = PorterStemmer()
-# nltk.download('stopwords')
-# nltk.download('wordnet')
-# nltk.download('punkt')
-# nltk.download('averaged_perceptron_tagger')
+#nltk.download('stopwords')
+#nltk.download('wordnet')
+#nltk.download('punkt')
+#nltk.download('averaged_perceptron_tagger')
 
 pos_map = defaultdict(lambda: wn.NOUN)
 pos_map['J'] = wn.ADJ
